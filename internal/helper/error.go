@@ -1,7 +1,7 @@
 package helper
 
-func PanicIfErr(err error) {
+func PanicIfErr(err error, text string) {
 	if err != nil {
-		panic(err)
+		panic(text)
 	}
 }

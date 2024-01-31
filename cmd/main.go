@@ -6,6 +6,7 @@ import (
 	"github.com/MaksKazantsev/go-crud/internal/routes"
 	"github.com/gorilla/mux"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -14,12 +15,14 @@ func main() {
 	routes.RegisterRoutes(r)
 
 	srv := http.Server{
-		Addr:    ":8000",
-		Handler: r,
+		Addr:         ":8000",
+		Handler:      r,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
 
 	// Launching server, using srv struct and handling an error
 
 	err := srv.ListenAndServe()
-	helper.PanicIfErr(err)
+	helper.PanicIfErr(err, "Error, server starting failed.")
 }

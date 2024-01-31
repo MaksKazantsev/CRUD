@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/MaksKazantsev/go-crud/internal/model"
 	"github.com/gorilla/mux"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -21,6 +22,7 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
+	log.Println("This is get book!")
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for _, item := range books {
