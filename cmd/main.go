@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"github.com/MaksKazantsev/go-crud/internal/config"
 	"github.com/MaksKazantsev/go-crud/internal/helper"
 	"github.com/MaksKazantsev/go-crud/internal/log"
 	"github.com/MaksKazantsev/go-crud/internal/routes"
@@ -9,30 +11,32 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"time"
 )
 
 func main() {
-	l := log.MustStart()
-	r := mux.NewRouter()
-	routes.RegisterRoutes(r)
+	cfg := config.MustLoad()
+	fmt.Println(cfg)
+	logger := log.MustStart()
+	router := mux.NewRouter()
+	routes.RegisterRoutes(router)
 
 	storage, err := sqlite.GetDB("./storage/storage.db")
 	if err != nil {
-		l.Error("failed to init")
+		logger.Error("failed to init")
 		os.Exit(1)
 	}
 	_ = storage
 
+	logger.Info("Server Started", slog.String("address", cfg.Address))
+
 	srv := http.Server{
-		Addr:         ":8000",
-		Handler:      r,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		Addr:         cfg.Address,
+		Handler:      router,
+		WriteTimeout: cfg.HTTPServer.WriteTimeout,
+		ReadTimeout:  cfg.HTTPServer.WriteTimeout,
 	}
 
 	// Launching server, using srv struct and handling an error
-	l.Info("Server Started", slog.String("ADDR", "8000"))
 	err = srv.ListenAndServe()
 	helper.PanicIfErr(err, "Error, server starting failed.")
 }
