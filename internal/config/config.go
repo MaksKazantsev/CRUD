@@ -11,7 +11,6 @@ type Config struct {
 	Env         string             `yaml:"env"`
 	StoragePath string             `yaml:"storage_path"`
 	Port        string             `yaml:"port"`
-	Address     string             `yaml:"address"`
 	HTTPServer  *server.HTTPServer `yaml:"HTTPServer"`
 }
 
