@@ -2,21 +2,17 @@ package config
 
 import (
 	"flag"
+	"github.com/MaksKazantsev/go-crud/internal/server"
 	"gopkg.in/yaml.v3"
 	"os"
-	"time"
 )
 
 type Config struct {
-	Env         string `yaml:"env"`
-	StoragePath string `yaml:"storage_path"`
-	Address     string `yaml:"address"`
-	HTTPServer  `yaml:"HTTPServer"`
-}
-
-type HTTPServer struct {
-	WriteTimeout time.Duration `yaml:"WriteTimeout"`
-	IdleTimeout  time.Duration `yaml:"IdleTimeout"`
+	Env         string             `yaml:"env"`
+	StoragePath string             `yaml:"storage_path"`
+	Port        string             `yaml:"port"`
+	Address     string             `yaml:"address"`
+	HTTPServer  *server.HTTPServer `yaml:"HTTPServer"`
 }
 
 func MustLoad() *Config {

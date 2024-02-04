@@ -1,6 +1,9 @@
 package routes
 
-import "github.com/gorilla/mux"
+import (
+	"github.com/MaksKazantsev/go-crud/internal/server"
+	"github.com/gorilla/mux"
+)
 import "github.com/MaksKazantsev/go-crud/internal/controllers"
 
 const (
@@ -8,7 +11,7 @@ const (
 	BookURL  = "/books/{ID}"
 )
 
-var RegisterRoutes = func(r *mux.Router) {
+var RegisterRoutes = func(r *mux.Router, server *server.HTTPServer) {
 	r.HandleFunc(BooksURL, controllers.GetBooks).Methods("GET")
 	r.HandleFunc(BookURL, controllers.GetBook).Methods("GET")
 	r.HandleFunc(BooksURL, controllers.CreateBook).Methods("POST")

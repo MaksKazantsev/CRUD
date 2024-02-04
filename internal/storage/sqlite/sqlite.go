@@ -2,7 +2,9 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"github.com/MaksKazantsev/go-crud/internal/storage"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -34,4 +36,37 @@ CREATE INDEX IF NOT EXISTS idx_alias ON url(alias)
 		return nil, fmt.Errorf("#{op}: #{err}")
 	}
 	return &Storage{db: db}, nil
+}
+
+func (s *Storage) saveURL(URLtoSave string, alias string) (int64, error) {
+	const op = "storage.sqlite.New"
+	stmt, err := s.db.Prepare("INSERT INTO url(url, alias) VALUES(?,?)")
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", op, err)
+	}
+	res, err := stmt.Exec(URLtoSave, alias)
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", op, err)
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", op, err)
+	}
+	return id, nil
+}
+
+func (s *Storage) getURL(alias string) (string, error) {
+	const op = "storage.sqlite.New"
+
+	stmt, err := s.db.Prepare("SELECT url FROM url WHERE alias = ?")
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	var resURL string
+	err = stmt.QueryRow(alias).Scan(&resURL)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", storage.ErrURLNotFound
+	}
+	return "", fmt.Errorf("%s: %w", op, err)
 }
